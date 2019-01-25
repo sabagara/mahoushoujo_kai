@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GlobalScript : MonoBehaviour
+public class ScoreManager : MonoBehaviour
 {
     void Start()
     {
-        
+        DontDestroyOnLoad(this.gameObject);
     }
 }
