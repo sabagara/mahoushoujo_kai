@@ -45,7 +45,12 @@ public class GameMain : MonoBehaviour
     private float[] enemyPosZTable = { 6.0f, 3.0f, 0.0f, -3.0f, -6.0f };
     private int[] telephonePolePosIdx = { 1, 4 };
 
-    private bool isExecFinish;
+    enum PlayerStatus {
+        RUN,
+        GAME_OVER,
+        GAME_CLEAR,
+    }
+    PlayerStatus playerStatus;
 
     void Start()
     {
@@ -83,7 +88,7 @@ public class GameMain : MonoBehaviour
         hurdlePrefab = (GameObject)Resources.Load("Prefabs/Hurdle");
         carPrefab = (GameObject)Resources.Load("Prefabs/Car");
 
-        isExecFinish = false;
+        playerStatus = PlayerStatus.RUN;
     }
 
     void Update()
@@ -110,21 +115,32 @@ public class GameMain : MonoBehaviour
             isJump = true;
         }
 
-        futonDirection.y = futonDirection.y - gravityAcceleration * Time.deltaTime;
-        futonPos += futonDirection * Time.deltaTime;
 
-        if (futonPos.y < 0.0f)
-        {
-            futonDirection.y = 0.0f;
-            futonPos.y = 0.0f;
-            isJump = false;
-        }
-
-        if (isExecFinish == false) 
+        if (playerStatus == PlayerStatus.RUN)
         {
             futonPos.z += runSpeed * Time.deltaTime;
             mainCameraPos.z += runSpeed * Time.deltaTime;
+
+            futonDirection.y = futonDirection.y - gravityAcceleration * Time.deltaTime;
+            futonPos += futonDirection * Time.deltaTime;
+
+            if (futonPos.y < 0.0f)
+            {
+                futonDirection.y = 0.0f;
+                futonPos.y = 0.0f;
+                isJump = false;
+            }
         }
+        else if (playerStatus == PlayerStatus.GAME_OVER)
+        {
+            futonPos += futonDirection * Time.deltaTime;
+            futon.transform.Rotate(new Vector3(-700.0f, 0, 0) * Time.deltaTime, Space.World);
+        }
+        else if (playerStatus == PlayerStatus.GAME_CLEAR)
+        {
+
+        }
+
 
         futon.transform.position = futonPos;
         mainCamera.transform.position = mainCameraPos;
@@ -228,14 +244,16 @@ public class GameMain : MonoBehaviour
 
     public void gameOver()
     {
-        if (isExecFinish == false)
+        if (playerStatus == PlayerStatus.RUN)
         {
             Invoke("changeGameOverScene", 3); // 3秒後にchangeGameOverSceneを呼び出し
-            isExecFinish = true; // 以降、ゲームオーバー開始処理を実行しない。
+            playerStatus = PlayerStatus.GAME_OVER; // 以降、ゲームオーバー開始処理を実行しない。
 
             GameObject effectDeadPrefab = (GameObject)Resources.Load("Prefabs/EffectDead");
             GameObject cloneBlock = Instantiate(effectDeadPrefab, futonPos, Quaternion.identity) as GameObject;
             cloneBlock.transform.SetParent(stageObject.transform);
+
+            futonDirection.y = 20.0f;
         }
     }
 
