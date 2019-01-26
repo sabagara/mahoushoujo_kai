@@ -45,6 +45,7 @@ public class GameMain : MonoBehaviour
     private float[] enemyPosZTable = { 6.0f, 3.0f, 0.0f, -3.0f, -6.0f };
     private int[] telephonePolePosIdx = { 1, 4 };
 
+    private bool isExecFinish;
 
     void Start()
     {
@@ -81,6 +82,8 @@ public class GameMain : MonoBehaviour
         telephonePolePrefab = (GameObject)Resources.Load("Prefabs/TelephonePole");
         hurdlePrefab = (GameObject)Resources.Load("Prefabs/Hurdle");
         carPrefab = (GameObject)Resources.Load("Prefabs/Car");
+
+        isExecFinish = false;
     }
 
     void Update()
@@ -117,11 +120,13 @@ public class GameMain : MonoBehaviour
             isJump = false;
         }
 
-        futonPos.z += runSpeed * Time.deltaTime;
+        if (isExecFinish == false) 
+        {
+            futonPos.z += runSpeed * Time.deltaTime;
+            mainCameraPos.z += runSpeed * Time.deltaTime;
+        }
 
         futon.transform.position = futonPos;
-
-        mainCameraPos.z += runSpeed * Time.deltaTime;
         mainCamera.transform.position = mainCameraPos;
 
         // ステージ自動生成 & 削除
@@ -220,10 +225,25 @@ public class GameMain : MonoBehaviour
         }
     }
 
+
     public void gameOver()
+    {
+        if (isExecFinish == false)
+        {
+            Invoke("changeGameOverScene", 3); // 3秒後にchangeGameOverSceneを呼び出し
+            isExecFinish = true; // 以降、ゲームオーバー開始処理を実行しない。
+
+            GameObject effectDeadPrefab = (GameObject)Resources.Load("Prefabs/EffectDead");
+            GameObject cloneBlock = Instantiate(effectDeadPrefab, futonPos, Quaternion.identity) as GameObject;
+            cloneBlock.transform.SetParent(stageObject.transform);
+        }
+    }
+
+    private void changeGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
     }
+
 
     public void gameClear()
     {
