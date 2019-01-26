@@ -19,6 +19,7 @@ public class GameMain : MonoBehaviour
     private Vector3 mainCameraPos;
 
     private GameObject blockDefaultPrefab;
+    private GameObject blockGoalPrefab;
     private float lastStagePos = 0.0f;
     private GameObject stageObject;
     private List<GameObject> blockList;
@@ -26,7 +27,7 @@ public class GameMain : MonoBehaviour
     private int futonHomePosMax = 3;
     private float[] futonHomePos = { -3.6f, -1.3f, 1.3f, 3.6f };
 
-    private float runSpeed = 0.0f;
+    private float runSpeed = 20.0f;
     private float sideStepSpeed = 10.0f;
     private float jumpPower = 15.0f;
     private float gravityAcceleration = 45.0f;
@@ -57,6 +58,7 @@ public class GameMain : MonoBehaviour
 
         // stage
         blockDefaultPrefab = (GameObject)Resources.Load("Prefabs/BlockDefault");
+        blockGoalPrefab = (GameObject)Resources.Load("Prefabs/BlockGoal");
         stageObject = GameObject.Find("Stage");
         blockList = new List<GameObject>();
 
@@ -108,7 +110,14 @@ public class GameMain : MonoBehaviour
         if (lastStagePos - futonPos.z < 30.0f)
         {
             lastStagePos += 15.0f;
-            addBlock(lastStagePos);
+            if (lastStagePos >= 100)
+            {
+                addBlock(blockGoalPrefab, lastStagePos);
+            }
+            else
+            {
+                addBlock(blockDefaultPrefab, lastStagePos);
+            }
 
             destroyOutBlock(futonPos.z - 10.0f);
         }
@@ -121,17 +130,18 @@ public class GameMain : MonoBehaviour
         for (int i = 0; i < 3; ++i)
         {
             lastStagePos = i * 15.0f;
-            addBlock(lastStagePos);
+            addBlock(blockDefaultPrefab, lastStagePos);
         }
     }
 
-    private void addBlock(float posZ)
+    private void addBlock(GameObject genPrefab, float posZ)
     {
         Vector3 generatePos = new Vector3(0.0f, 0.0f, posZ);
-        GameObject cloneBlock = Instantiate(blockDefaultPrefab, generatePos, Quaternion.identity) as GameObject;
+        GameObject cloneBlock = Instantiate(genPrefab, generatePos, Quaternion.identity) as GameObject;
         cloneBlock.transform.SetParent(stageObject.transform);
         blockList.Add(cloneBlock);
     }
+
 
     private void destroyOutBlock(float deletePos)
     {
@@ -155,5 +165,10 @@ public class GameMain : MonoBehaviour
     public void gameOver()
     {
         SceneManager.LoadScene("GameOver");
+    }
+
+    public void gameClear()
+    {
+        SceneManager.LoadScene("GameClear");
     }
 }
