@@ -20,9 +20,11 @@ public class GameMain : MonoBehaviour
 
     private GameObject blockDefaultPrefab;
     private GameObject blockGoalPrefab;
+    private GameObject blockCrossroadsPrefab;
     private float lastStagePos = 0.0f;
     private GameObject stageObject;
     private List<GameObject> blockList;
+    private int crossroadsCount;
 
     private int futonHomePosMax = 3;
     private float[] futonHomePos = { -3.6f, -1.3f, 1.3f, 3.6f };
@@ -31,6 +33,8 @@ public class GameMain : MonoBehaviour
     private float sideStepSpeed = 10.0f;
     private float jumpPower = 15.0f;
     private float gravityAcceleration = 45.0f;
+
+    private float goalPositon = 20.0f * 60.0f;//runSpeed * goalSec;
 
     GlobalManager globalManager;
 
@@ -59,8 +63,10 @@ public class GameMain : MonoBehaviour
         // stage
         blockDefaultPrefab = (GameObject)Resources.Load("Prefabs/BlockDefault");
         blockGoalPrefab = (GameObject)Resources.Load("Prefabs/BlockGoal");
+        blockCrossroadsPrefab = (GameObject)Resources.Load("Prefabs/BlockCrossroads");
         stageObject = GameObject.Find("Stage");
         blockList = new List<GameObject>();
+        crossroadsCount = 0;
 
         initializeStage();
     }
@@ -110,9 +116,16 @@ public class GameMain : MonoBehaviour
         if (lastStagePos - futonPos.z < 30.0f)
         {
             lastStagePos += 15.0f;
-            if (lastStagePos >= 100)
+            crossroadsCount -= 1;
+
+            if (lastStagePos >= goalPositon)
             {
                 addBlock(blockGoalPrefab, lastStagePos);
+            }
+            else if (crossroadsCount <= 0 && Random.Range(0, 100) < 40)
+            {
+                addBlock(blockCrossroadsPrefab, lastStagePos);
+                crossroadsCount = 2;
             }
             else
             {
