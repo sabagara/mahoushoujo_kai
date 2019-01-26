@@ -41,6 +41,7 @@ public class GameMain : MonoBehaviour
 
     private GameObject telephonePolePrefab;
     private GameObject hurdlePrefab;
+    private GameObject carPrefab;
     private float[] enemyPosZTable = { 6.0f, 3.0f, 0.0f, -3.0f, -6.0f };
     private int[] telephonePolePosIdx = { 1, 4 };
 
@@ -79,6 +80,7 @@ public class GameMain : MonoBehaviour
         // Enemy
         telephonePolePrefab = (GameObject)Resources.Load("Prefabs/TelephonePole");
         hurdlePrefab = (GameObject)Resources.Load("Prefabs/Hurdle");
+        carPrefab = (GameObject)Resources.Load("Prefabs/Car");
     }
 
     void Update()
@@ -135,6 +137,7 @@ public class GameMain : MonoBehaviour
             else if (crossroadsCount <= 0 && Random.Range(0, 100) < 40)
             {
                 addBlock(blockCrossroadsPrefab, lastStagePos);
+                addCar(lastStagePos);
                 crossroadsCount = 2;
             }
             else
@@ -195,6 +198,26 @@ public class GameMain : MonoBehaviour
             }
         }
 
+    }
+
+    private void addCar(float posZ)
+    {
+        if (Random.Range(0, 100) < 70)
+        {
+            Vector3 generatePos;
+            Quaternion carQuot = Quaternion.identity;
+            if (Random.Range(0, 100) < 50)
+            {
+                generatePos = new Vector3(-80.0f, 0.0f, posZ + 2.5f);
+            }
+            else
+            {
+                generatePos = new Vector3(80.0f, 0.0f, posZ - 2.5f);
+                carQuot = Quaternion.Euler(0, 180, 0);
+            }
+            GameObject cloneCar = Instantiate(carPrefab, generatePos, carQuot) as GameObject;
+            cloneCar.transform.SetParent(stageObject.transform);
+        }
     }
 
     public void gameOver()
