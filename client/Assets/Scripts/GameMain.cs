@@ -18,6 +18,8 @@ public class GameMain : MonoBehaviour
 
     private GameObject blockDefaultPrefab;
     private float lastStagePos = 0.0f;
+    private GameObject stageObject;
+    private List<GameObject> blockList;
 
     private int futonHomePosMax = 3;
     private float[] futonHomePos = { -3.6f, -1.3f, 1.3f, 3.6f };
@@ -46,6 +48,8 @@ public class GameMain : MonoBehaviour
 
         // stage
         blockDefaultPrefab = (GameObject)Resources.Load("Prefabs/BlockDefault");
+        stageObject = GameObject.Find("Stage");
+        blockList = new List<GameObject>();
 
         initializeStage();
     }
@@ -90,17 +94,52 @@ public class GameMain : MonoBehaviour
 
         mainCameraPos.z += runSpeed * Time.deltaTime;
         mainCamera.transform.position = mainCameraPos;
+
+        // ステージ自動生成 & 削除
+        if (lastStagePos - futonPos.z < 30.0f)
+        {
+            lastStagePos += 15.0f;
+            addBlock(lastStagePos);
+
+            destroyOutBlock(futonPos.z - 10.0f);
+        }
     }
 
     // ステージの初期化
     private void initializeStage()
     {
         // stage
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < 3; ++i)
         {
-            Vector3 generatePos = new Vector3(0.0f, 0.0f, i * 15.0f);
-            GameObject cloneSheep = Instantiate(blockDefaultPrefab, generatePos, Quaternion.identity) as GameObject;
             lastStagePos = i * 15.0f;
+            addBlock(lastStagePos);
+        }
+    }
+
+    private void addBlock(float posZ)
+    {
+        Vector3 generatePos = new Vector3(0.0f, 0.0f, posZ);
+        GameObject cloneBlock = Instantiate(blockDefaultPrefab, generatePos, Quaternion.identity) as GameObject;
+        cloneBlock.transform.SetParent(stageObject.transform);
+        blockList.Add(cloneBlock);
+    }
+
+    private void destroyOutBlock(float deletePos)
+    {
+        List<GameObject> deleteTarget = new List<GameObject>(); 
+
+        foreach (GameObject item in blockList)
+        {
+            if (item.transform.position.z < deletePos)
+            {
+                deleteTarget.Add(item);
+            }
+        }
+
+        foreach (GameObject item in deleteTarget)
+        {
+            Destroy(item);
+            blockList.Remove(item); 
         }
     }
 }
