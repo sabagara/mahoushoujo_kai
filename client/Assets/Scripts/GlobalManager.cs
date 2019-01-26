@@ -4,6 +4,8 @@ using System.Collections;
 
 public class GlobalManager : MonoBehaviour
 {
+    private int pillowNum;
+
     void Start()
     {
         // スコアマネージャーの生成
@@ -15,5 +17,15 @@ public class GlobalManager : MonoBehaviour
             scoreManager.name = "ScoreManager";
             scoreManager.AddComponent<ScoreManager>();
         }
+    }
+
+    public void setPillowNum(int num)
+    {
+        pillowNum = num;
+    }
+
+    public int getPillowNum()
+    {
+        return pillowNum;
     }
 }

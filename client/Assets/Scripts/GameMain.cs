@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine.SceneManagement;
+
 public class GameMain : MonoBehaviour
 {
     private GameObject futon;
@@ -24,13 +26,20 @@ public class GameMain : MonoBehaviour
     private int futonHomePosMax = 3;
     private float[] futonHomePos = { -3.6f, -1.3f, 1.3f, 3.6f };
 
-    private float runSpeed = 20.0f;
+    private float runSpeed = 0.0f;
     private float sideStepSpeed = 10.0f;
     private float jumpPower = 15.0f;
     private float gravityAcceleration = 45.0f;
 
+    GlobalManager globalManager;
+
     void Start()
     {
+        //init Global
+        globalManager = GameObject.Find("GlobalManager").GetComponent<GlobalManager>();
+        globalManager.setPillowNum(0);
+
+        // init Camera
         mainCamera = GameObject.Find("MainCamera");
         mainCameraPos = mainCamera.transform.position;
 
@@ -141,5 +150,10 @@ public class GameMain : MonoBehaviour
             Destroy(item);
             blockList.Remove(item); 
         }
+    }
+
+    public void gameOver()
+    {
+        SceneManager.LoadScene("GameOver");
     }
 }
