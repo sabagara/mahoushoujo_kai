@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class TitleSceneScript : MonoBehaviour
 {
+    private void Start()
+    {
+        SoundController.Instance.playBgm(SoundController.SOUND.BGM_TITLE);
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
