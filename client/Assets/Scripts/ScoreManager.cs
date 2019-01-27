@@ -4,8 +4,20 @@ using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
-    void Start()
+    int pillowNum = 0;
+
+    public void setPillowNum(int num)
     {
-        DontDestroyOnLoad(this.gameObject);
+        pillowNum = num;
+    }
+
+    public void incrementPillow()
+    {
+        pillowNum += 1;
+    }
+
+    public int getPillowNum()
+    {
+        return pillowNum;
     }
 }

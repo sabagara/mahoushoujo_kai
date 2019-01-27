@@ -37,7 +37,7 @@ public class GameMain : MonoBehaviour
 
     private float goalPositon = 20.0f * 60.0f;//runSpeed * goalSec;
 
-    GlobalManager globalManager;
+    ScoreManager scoreManager;
 
     private GameObject telephonePolePrefab;
     private GameObject hurdlePrefab;
@@ -55,8 +55,8 @@ public class GameMain : MonoBehaviour
     void Start()
     {
         //init Global
-        globalManager = GameObject.Find("GlobalManager").GetComponent<GlobalManager>();
-        globalManager.setPillowNum(0);
+        scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
+        scoreManager.setPillowNum(0);
 
         // init Camera
         mainCamera = GameObject.Find("MainCamera");
@@ -262,9 +262,28 @@ public class GameMain : MonoBehaviour
         SceneManager.LoadScene("GameOver");
     }
 
-
     public void gameClear()
     {
         SceneManager.LoadScene("GameClear");
+    }
+
+    public void getPillow()
+    {
+        scoreManager.incrementPillow();
+
+        GameObject effectDeadPrefab = (GameObject)Resources.Load("Prefabs/EffectPillow");
+        GameObject cloneBlock = Instantiate(effectDeadPrefab, futonPos, Quaternion.identity) as GameObject;
+        cloneBlock.transform.SetParent(futon.transform);
+
+        if (scoreManager.getPillowNum() == 1)
+        {
+            GameObject pillow1 = GameObject.Find("PillowScore1");
+            pillow1.GetComponent<Renderer>().enabled = true;
+        }
+        else
+        {
+            GameObject pillow2 = GameObject.Find("PillowScore2");
+            pillow2.GetComponent<Renderer>().enabled = true;
+        }
     }
 }
