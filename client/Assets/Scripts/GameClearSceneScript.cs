@@ -10,7 +10,7 @@ public class GameClearSceneScript : MonoBehaviour
     private void Start()
     {
         scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
-
+        SoundController.Instance.playBgm(SoundController.SOUND.BGM_GAME_OVER);
         Debug.Log("PillpowNum:" + scoreManager.getPillowNum());
     }
     void Update()

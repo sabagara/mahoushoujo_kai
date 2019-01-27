@@ -35,7 +35,7 @@ public class GameMain : MonoBehaviour
     private float jumpPower = 15.0f;
     private float gravityAcceleration = 45.0f;
 
-    private float goalPositon = 20.0f * 60.0f;//runSpeed * goalSec;
+    private float goalPositon = 20.0f * 6.0f;//runSpeed * goalSec;
 
     ScoreManager scoreManager;
 
