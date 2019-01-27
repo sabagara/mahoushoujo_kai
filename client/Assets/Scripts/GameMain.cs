@@ -42,6 +42,7 @@ public class GameMain : MonoBehaviour
     private GameObject telephonePolePrefab;
     private GameObject hurdlePrefab;
     private GameObject cornPrefab;
+    private GameObject drainpipePrefab;
     private GameObject carPrefab;
     private float[] enemyPosZTable = { 6.0f, 3.0f, 0.0f, -3.0f, -6.0f };
     private int[] telephonePolePosIdx = { 1, 4 };
@@ -94,6 +95,7 @@ public class GameMain : MonoBehaviour
         telephonePolePrefab = (GameObject)Resources.Load("Prefabs/TelephonePole");
         hurdlePrefab = (GameObject)Resources.Load("Prefabs/Hurdle");
         cornPrefab = (GameObject)Resources.Load("Prefabs/Corn");
+        drainpipePrefab = (GameObject)Resources.Load("Prefabs/Drainpipe");
         carPrefab = (GameObject)Resources.Load("Prefabs/Car");
 
 
@@ -238,8 +240,19 @@ public class GameMain : MonoBehaviour
                 }
                 else if ((zposIdx % 2 == 0) && Random.Range(0, 100) < 20)
                 {
+                    int rate = Random.Range(0, 100);
+                    GameObject enemyPrefab = hurdlePrefab;
+                    if (rate < 10)
+                    {
+                        enemyPrefab = drainpipePrefab;
+                    }
+                    else if (rate < 60)
+                    {
+                        enemyPrefab = cornPrefab;
+                    }
+
                     Vector3 generatePos = new Vector3(xpos, 0.0f, posZ + zpos);
-                    GameObject cloneBlock = Instantiate(Random.Range(0, 100) < 50 ? cornPrefab : hurdlePrefab, generatePos, Quaternion.identity) as GameObject;
+                    GameObject cloneBlock = Instantiate(enemyPrefab, generatePos, Quaternion.identity) as GameObject;
                     cloneBlock.transform.SetParent(stageObject.transform);
                 }
             }
