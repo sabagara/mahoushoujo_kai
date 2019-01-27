@@ -47,7 +47,7 @@ public class GameMain : MonoBehaviour
 
 
     private GameObject pillowPrefab;
-    private float[] pillowPosZTable = { 400.0f, 700.0f, 1100.0f };
+    private float[] pillowPosZTable = { 200.0f, 700.0f, 1100.0f };
 
     enum PlayerStatus {
         RUN,
