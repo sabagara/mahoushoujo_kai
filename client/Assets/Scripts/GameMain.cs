@@ -312,19 +312,16 @@ public class GameMain : MonoBehaviour
         GameObject cloneBlock = Instantiate(effectDeadPrefab, futonPos, Quaternion.identity) as GameObject;
         cloneBlock.transform.SetParent(futon.transform);
         SoundController.Instance.play(SoundController.SOUND.SE_PILLOW);
-        SoundController.Instance.play(SoundController.SOUND.SE_MostBAD_end);
 
         if (scoreManager.getPillowNum() == 1)
         {
             GameObject pillow1 = GameObject.Find("PillowScore1");
             pillow1.GetComponent<Renderer>().enabled = true;
-            SoundController.Instance.play(SoundController.SOUND.SE_TRUE_clear);
         }
         else
         {
             GameObject pillow2 = GameObject.Find("PillowScore2");
             pillow2.GetComponent<Renderer>().enabled = true;
-            SoundController.Instance.play(SoundController.SOUND.SE_ANOTHOR_clear);
         }
     }
 }

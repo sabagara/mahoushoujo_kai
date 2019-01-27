@@ -99,6 +99,7 @@ public class SoundController {
 		initializeAudioSource ();
 
 		m_BgmAudioSource.clip = audioClip;
+        m_BgmAudioSource.volume = 0.6f;
 		m_BgmAudioSource.Play ();
 	}
 
