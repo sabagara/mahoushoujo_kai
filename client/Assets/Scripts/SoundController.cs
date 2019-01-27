@@ -14,9 +14,9 @@ public class SoundController {
 	public enum SOUND {
         BGM_TITLE,
         BGM_GAME_MAIN,
-        BGM_CLEAR,
         BGM_GAME_OVER,
 
+        SE_CLEAR,
         SE_PILLOW,
         SE_SHIFT,
         SE_BOMB,
@@ -24,12 +24,12 @@ public class SoundController {
 
 	private SoundController()
 	{
-		addAudio (SOUND.BGM_TITLE, "Sounds/se_start2");
-        addAudio (SOUND.BGM_GAME_MAIN, "Sounds/se_play");
-        addAudio (SOUND.BGM_CLEAR, "Sounds/se_clear2");
-        addAudio (SOUND.BGM_GAME_OVER, "Sounds/se_gameover2");
-        addAudio (SOUND.SE_PILLOW, "Sounds/se_get2");
-        addAudio (SOUND.SE_BOMB, "Sounds/se_bomb1");
+		addAudio (SOUND.BGM_TITLE, "Sounds/bgm_start");
+        addAudio (SOUND.BGM_GAME_MAIN, "Sounds/bgm_play");
+        addAudio (SOUND.SE_CLEAR, "Sounds/se_clear");
+        addAudio (SOUND.BGM_GAME_OVER, "Sounds/se_gameover");
+        addAudio (SOUND.SE_PILLOW, "Sounds/se_get");
+        addAudio (SOUND.SE_BOMB, "Sounds/se_bomb");
         addAudio (SOUND.SE_SHIFT, "Sounds/se_shift");
     }
 

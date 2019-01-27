@@ -107,10 +107,12 @@ public class GameMain : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.RightArrow) && futonCurrentHomePosNo < futonHomePosMax)
             {
                 futonCurrentHomePosNo += 1;
+                SoundController.Instance.play(SoundController.SOUND.SE_SHIFT);
             }
             if (Input.GetKeyDown(KeyCode.LeftArrow) && futonCurrentHomePosNo > 0)
             {
                 futonCurrentHomePosNo -= 1;
+                SoundController.Instance.play(SoundController.SOUND.SE_SHIFT);
             }
         }
         futonXPosTarget = futonHomePos[futonCurrentHomePosNo];
@@ -274,7 +276,7 @@ public class GameMain : MonoBehaviour
             GameObject effectDeadPrefab = (GameObject)Resources.Load("Prefabs/EffectDead");
             GameObject cloneBlock = Instantiate(effectDeadPrefab, futonPos, Quaternion.identity) as GameObject;
             cloneBlock.transform.SetParent(stageObject.transform);
-
+            SoundController.Instance.play(SoundController.SOUND.SE_BOMB);
             futonDirection.y = 20.0f;
         }
     }
@@ -288,7 +290,7 @@ public class GameMain : MonoBehaviour
             GameObject effectGoalPrefab = (GameObject)Resources.Load("Prefabs/EffectGoal");
             GameObject cloneBlock = Instantiate(effectGoalPrefab, futonPos, Quaternion.identity) as GameObject;
             cloneBlock.transform.SetParent(stageObject.transform);
-
+            SoundController.Instance.play(SoundController.SOUND.SE_CLEAR);
         }
     }
 
