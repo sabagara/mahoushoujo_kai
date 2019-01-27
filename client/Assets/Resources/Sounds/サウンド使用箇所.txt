@@ -1,0 +1,13 @@
+se_gameover2.mp3 ゲームオーバー画面　
+
+se_get2.mp3 枕を入手した瞬間 
+
+bgm_play.mp3 プレイ中 
+
+se_shift.mp3 布団の歩く音
+
+bgm_start2.mp3 スタート画面
+
+se_bomb.mp3 爆発音
+
+se_clear クリア時（玄関に入った瞬間）
