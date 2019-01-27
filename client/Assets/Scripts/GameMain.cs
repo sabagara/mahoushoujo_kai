@@ -132,6 +132,7 @@ public class GameMain : MonoBehaviour
         {
             futonDirection.y = jumpPower;
             isJump = true;
+            SoundController.Instance.play(SoundController.SOUND.SE_SHIFT);
         }
 
 
