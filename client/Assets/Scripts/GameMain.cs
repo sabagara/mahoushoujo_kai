@@ -44,6 +44,7 @@ public class GameMain : MonoBehaviour
     private GameObject cornPrefab;
     private GameObject drainpipePrefab;
     private GameObject carPrefab;
+    private GameObject masahiroPrefab;
     private float[] enemyPosZTable = { 6.0f, 3.0f, 0.0f, -3.0f, -6.0f };
     private int[] telephonePolePosIdx = { 1, 4 };
 
@@ -98,7 +99,7 @@ public class GameMain : MonoBehaviour
         cornPrefab = (GameObject)Resources.Load("Prefabs/Corn");
         drainpipePrefab = (GameObject)Resources.Load("Prefabs/Drainpipe");
         carPrefab = (GameObject)Resources.Load("Prefabs/Car");
-
+        masahiroPrefab = (GameObject)Resources.Load("Prefabs/Masahiro");
 
         pillowPrefab = (GameObject)Resources.Load("Prefabs/Pillow");
 
@@ -246,7 +247,11 @@ public class GameMain : MonoBehaviour
                 {
                     int rate = Random.Range(0, 100);
                     GameObject enemyPrefab = hurdlePrefab;
-                    if (rate < 10)
+                    if (rate < 1)
+                    {
+                        enemyPrefab = masahiroPrefab;
+                    }
+                    else if (rate < 10)
                     {
                         enemyPrefab = drainpipePrefab;
                     }
