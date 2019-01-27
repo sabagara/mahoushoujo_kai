@@ -19,8 +19,12 @@ public class SoundController {
         SE_CLEAR,
         SE_PILLOW,
         SE_SHIFT,
-        SE_BOMB,
-	};
+        SE_BAD_end,
+        SE_MostBAD_end,
+        SE_TRUE_clear,
+        SE_ANOTHOR_clear,
+        SE_DEADKOICHI_end,
+    };
 
 	private SoundController()
 	{
@@ -29,8 +33,12 @@ public class SoundController {
         addAudio (SOUND.SE_CLEAR, "Sounds/se_clear");
         addAudio (SOUND.BGM_GAME_OVER, "Sounds/se_gameover");
         addAudio (SOUND.SE_PILLOW, "Sounds/se_get");
-        addAudio (SOUND.SE_BOMB, "Sounds/se_bomb");
+        addAudio (SOUND.SE_BAD_end, "Sounds/se_bomb");
         addAudio (SOUND.SE_SHIFT, "Sounds/se_shift");
+        addAudio(SOUND.SE_MostBAD_end, "Sounds/voice_gameclear_0");
+        addAudio(SOUND.SE_TRUE_clear, "Sounds/voice_gameclear_1");
+        addAudio(SOUND.SE_ANOTHOR_clear, "Sounds/voice_gameclear_2");
+        addAudio(SOUND.SE_DEADKOICHI_end, "Sounds/voice_gameover");
     }
 
 	public static SoundController Instance {
