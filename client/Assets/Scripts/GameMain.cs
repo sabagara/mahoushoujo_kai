@@ -58,6 +58,8 @@ public class GameMain : MonoBehaviour
 
     void Start()
     {
+        SoundController.Instance.playBgm(SoundController.SOUND.BGM_GAME_MAIN);
+
         //init Global
         scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
         scoreManager.setPillowNum(0);
@@ -266,7 +268,7 @@ public class GameMain : MonoBehaviour
     {
         if (playerStatus == PlayerStatus.RUN)
         {
-            Invoke("changeGameOverScene", 3); // 3秒後にchangeGameOverSceneを呼び出し
+            Invoke("changeGameOverScene", 1); // 1秒後にchangeGameOverSceneを呼び出し
             playerStatus = PlayerStatus.GAME_OVER; // 以降、ゲームオーバー開始処理を実行しない。
 
             GameObject effectDeadPrefab = (GameObject)Resources.Load("Prefabs/EffectDead");
@@ -276,13 +278,26 @@ public class GameMain : MonoBehaviour
             futonDirection.y = 20.0f;
         }
     }
+    public void gameClear()
+    {
+        if (playerStatus == PlayerStatus.RUN)
+        {
+            Invoke("changeGameClearScene", 3); // 3秒後にchangeGameClearSceneを呼び出し
+            playerStatus = PlayerStatus.GAME_CLEAR; // 以降、ゲームオーバー開始処理を実行しない。
+
+            GameObject effectGoalPrefab = (GameObject)Resources.Load("Prefabs/EffectGoal");
+            GameObject cloneBlock = Instantiate(effectGoalPrefab, futonPos, Quaternion.identity) as GameObject;
+            cloneBlock.transform.SetParent(stageObject.transform);
+
+        }
+    }
 
     private void changeGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
     }
 
-    public void gameClear()
+    public void changeGameClearScene()
     {
         SceneManager.LoadScene("GameClear");
     }
@@ -290,11 +305,11 @@ public class GameMain : MonoBehaviour
     public void getPillow()
     {
         scoreManager.incrementPillow();
-        Debug.Log("PNUM:" + scoreManager.getPillowNum());
 
         GameObject effectDeadPrefab = (GameObject)Resources.Load("Prefabs/EffectPillow");
         GameObject cloneBlock = Instantiate(effectDeadPrefab, futonPos, Quaternion.identity) as GameObject;
         cloneBlock.transform.SetParent(futon.transform);
+        SoundController.Instance.play(SoundController.SOUND.SE_PILLOW);
 
         if (scoreManager.getPillowNum() == 1)
         {
