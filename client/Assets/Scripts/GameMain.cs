@@ -290,6 +290,7 @@ public class GameMain : MonoBehaviour
     public void getPillow()
     {
         scoreManager.incrementPillow();
+        Debug.Log("PNUM:" + scoreManager.getPillowNum());
 
         GameObject effectDeadPrefab = (GameObject)Resources.Load("Prefabs/EffectPillow");
         GameObject cloneBlock = Instantiate(effectDeadPrefab, futonPos, Quaternion.identity) as GameObject;

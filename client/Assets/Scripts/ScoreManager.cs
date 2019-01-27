@@ -6,6 +6,11 @@ public class ScoreManager : MonoBehaviour
 {
     int pillowNum = 0;
 
+    private void Start()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     public void setPillowNum(int num)
     {
         pillowNum = num;

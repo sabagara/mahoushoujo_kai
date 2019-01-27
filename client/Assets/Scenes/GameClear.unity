@@ -475,7 +475,7 @@ GameObject:
   - component: {fileID: 1396419552}
   - component: {fileID: 1396419553}
   m_Layer: 0
-  m_Name: GameOverSceneScript
+  m_Name: GameClearSceneScript
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -504,7 +504,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1396419551}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306d1da537d30463a85d1c9ba2b8f29b, type: 3}
+  m_Script: {fileID: 11500000, guid: 1409c638bf04b4dc6942409e465b4ae8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1435470404
