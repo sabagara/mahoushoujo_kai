@@ -5,6 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class GameOverSceneScript : MonoBehaviour
 {
+    private void Start()
+    {
+        SoundController.Instance.playBgm(SoundController.SOUND.BGM_GAME_OVER);
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))

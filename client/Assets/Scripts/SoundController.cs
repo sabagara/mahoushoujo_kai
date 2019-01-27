@@ -18,13 +18,20 @@ public class SoundController {
         BGM_GAME_OVER,
 
         SE_PILLOW,
-        SE_GOAL,
+        SE_SHIFT,
+        SE_BOMB,
 	};
 
 	private SoundController()
 	{
-		addAudio (SOUND.BGM_TITLE, "Sounds/bgm_test");
-	}
+		addAudio (SOUND.BGM_TITLE, "Sounds/se_start2");
+        addAudio (SOUND.BGM_GAME_MAIN, "Sounds/se_play");
+        addAudio (SOUND.BGM_CLEAR, "Sounds/se_clear2");
+        addAudio (SOUND.BGM_GAME_OVER, "Sounds/se_gameover2");
+        addAudio (SOUND.SE_PILLOW, "Sounds/se_get2");
+        addAudio (SOUND.SE_BOMB, "Sounds/se_bomb1");
+        addAudio (SOUND.SE_SHIFT, "Sounds/se_shift");
+    }
 
 	public static SoundController Instance {
 		get {
@@ -46,7 +53,6 @@ public class SoundController {
 
 		//Debug.Log ("sounds : " + sounds.Count);
 		sounds.Add ((AudioClip)Resources.Load (filePath));
-
 		//audioClips.Add (soundKey, (AudioClip)Resources.Load (filePath));
 	}
 
