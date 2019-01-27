@@ -47,6 +47,7 @@ public class GameMain : MonoBehaviour
     private float[] enemyPosZTable = { 6.0f, 3.0f, 0.0f, -3.0f, -6.0f };
     private int[] telephonePolePosIdx = { 1, 4 };
 
+    private bool isPillowGen = false;
 
     private GameObject pillowPrefab;
     private float[] pillowPosZTable = { 200.0f, 700.0f, 1100.0f };
@@ -102,6 +103,8 @@ public class GameMain : MonoBehaviour
         pillowPrefab = (GameObject)Resources.Load("Prefabs/Pillow");
 
         playerStatus = PlayerStatus.RUN;
+
+        isPillowGen = false;
     }
 
     void Update()
@@ -166,6 +169,14 @@ public class GameMain : MonoBehaviour
             lastStagePos += 15.0f;
             crossroadsCount -= 1;
 
+            foreach (float pillowPosZ in pillowPosZTable)
+            {
+                if (pillowPosZ <= lastStagePos && lastStagePos < (pillowPosZ + 15.0f))
+                {
+                    isPillowGen = true;
+                }
+            }
+
             if (lastStagePos >= goalPositon)
             {
                 addBlock(blockGoalPrefab, lastStagePos);
@@ -209,14 +220,6 @@ public class GameMain : MonoBehaviour
 
     private void addObject(float posZ)
     {
-        bool isPillow = false;
-        foreach (float pillowPosZ in pillowPosZTable)
-        {
-            if (pillowPosZ <= posZ && posZ < (pillowPosZ + 15.0f))
-            {
-                isPillow = true;
-            }
-        }
         int[] reservedPillow = { Random.Range(0, futonHomePos.Length), Random.Range(0, enemyPosZTable.Length) };
 
         for (int zposIdx = 0; zposIdx < enemyPosZTable.Length; ++zposIdx)
@@ -226,11 +229,12 @@ public class GameMain : MonoBehaviour
             {
                 float xpos = futonHomePos[xposIdx];
 
-                if (isPillow && reservedPillow[0] == xposIdx && reservedPillow[1] == zposIdx)
+                if (isPillowGen && reservedPillow[0] == xposIdx && reservedPillow[1] == zposIdx)
                 {
                     Vector3 generatePos = new Vector3(xpos, 0.0f, posZ + zpos);
                     GameObject cloneBlock = Instantiate(pillowPrefab, generatePos, Quaternion.identity) as GameObject;
                     cloneBlock.transform.SetParent(stageObject.transform);
+                    isPillowGen = false;
                 }
                 else if ((zposIdx % 2 == 1) && (xposIdx == futonPosLeftIdx || xposIdx == futonPosRightIdx) && Random.Range(0, 100) < 20)
                 {
