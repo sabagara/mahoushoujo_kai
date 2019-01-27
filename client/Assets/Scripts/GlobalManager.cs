@@ -4,9 +4,7 @@ using System.Collections;
 
 public class GlobalManager : MonoBehaviour
 {
-    private int pillowNum;
-
-    void Start()
+    private void Awake()
     {
         // スコアマネージャーの生成
         GameObject scoreManager = GameObject.Find("ScoreManager");
@@ -17,15 +15,5 @@ public class GlobalManager : MonoBehaviour
             scoreManager.name = "ScoreManager";
             scoreManager.AddComponent<ScoreManager>();
         }
-    }
-
-    public void setPillowNum(int num)
-    {
-        pillowNum = num;
-    }
-
-    public int getPillowNum()
-    {
-        return pillowNum;
     }
 }

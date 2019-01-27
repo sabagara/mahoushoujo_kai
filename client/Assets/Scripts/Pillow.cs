@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Pillow : MonoBehaviour
 {
     private GameMain gameMain;
 
@@ -15,7 +15,8 @@ public class Enemy : MonoBehaviour
     {
         if (col.name == "Futon")
         {
-            gameMain.gameOver();
+            gameMain.getPillow();
+            Destroy(gameObject);
         }
     }
 

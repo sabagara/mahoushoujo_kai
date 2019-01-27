@@ -37,7 +37,7 @@ public class GameMain : MonoBehaviour
 
     private float goalPositon = 20.0f * 60.0f;//runSpeed * goalSec;
 
-    GlobalManager globalManager;
+    ScoreManager scoreManager;
 
     private GameObject telephonePolePrefab;
     private GameObject hurdlePrefab;
@@ -46,11 +46,21 @@ public class GameMain : MonoBehaviour
     private int[] telephonePolePosIdx = { 1, 4 };
 
 
+    private GameObject pillowPrefab;
+    private float[] pillowPosZTable = { 400.0f, 700.0f, 1100.0f };
+
+    enum PlayerStatus {
+        RUN,
+        GAME_OVER,
+        GAME_CLEAR,
+    }
+    PlayerStatus playerStatus;
+
     void Start()
     {
         //init Global
-        globalManager = GameObject.Find("GlobalManager").GetComponent<GlobalManager>();
-        globalManager.setPillowNum(0);
+        scoreManager = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
+        scoreManager.setPillowNum(0);
 
         // init Camera
         mainCamera = GameObject.Find("MainCamera");
@@ -81,6 +91,11 @@ public class GameMain : MonoBehaviour
         telephonePolePrefab = (GameObject)Resources.Load("Prefabs/TelephonePole");
         hurdlePrefab = (GameObject)Resources.Load("Prefabs/Hurdle");
         carPrefab = (GameObject)Resources.Load("Prefabs/Car");
+
+
+        pillowPrefab = (GameObject)Resources.Load("Prefabs/Pillow");
+
+        playerStatus = PlayerStatus.RUN;
     }
 
     void Update()
@@ -107,21 +122,34 @@ public class GameMain : MonoBehaviour
             isJump = true;
         }
 
-        futonDirection.y = futonDirection.y - gravityAcceleration * Time.deltaTime;
-        futonPos += futonDirection * Time.deltaTime;
 
-        if (futonPos.y < 0.0f)
+        if (playerStatus == PlayerStatus.RUN)
         {
-            futonDirection.y = 0.0f;
-            futonPos.y = 0.0f;
-            isJump = false;
+            futonPos.z += runSpeed * Time.deltaTime;
+            mainCameraPos.z += runSpeed * Time.deltaTime;
+
+            futonDirection.y = futonDirection.y - gravityAcceleration * Time.deltaTime;
+            futonPos += futonDirection * Time.deltaTime;
+
+            if (futonPos.y < 0.0f)
+            {
+                futonDirection.y = 0.0f;
+                futonPos.y = 0.0f;
+                isJump = false;
+            }
+        }
+        else if (playerStatus == PlayerStatus.GAME_OVER)
+        {
+            futonPos += futonDirection * Time.deltaTime;
+            futon.transform.Rotate(new Vector3(-700.0f, 0, 0) * Time.deltaTime, Space.World);
+        }
+        else if (playerStatus == PlayerStatus.GAME_CLEAR)
+        {
+
         }
 
-        futonPos.z += runSpeed * Time.deltaTime;
 
         futon.transform.position = futonPos;
-
-        mainCameraPos.z += runSpeed * Time.deltaTime;
         mainCamera.transform.position = mainCameraPos;
 
         // ステージ自動生成 & 削除
@@ -143,7 +171,7 @@ public class GameMain : MonoBehaviour
             else
             {
                 addBlock(blockDefaultPrefab, lastStagePos);
-                addEnemyDefault(lastStagePos);
+                addObject(lastStagePos);
             }
         }
     }
@@ -171,25 +199,38 @@ public class GameMain : MonoBehaviour
         cloneBlock.transform.SetParent(stageObject.transform);
     }
 
-    private void addEnemyDefault(float posZ)
+    private void addObject(float posZ)
     {
-        int[] posIdxTable = { futonPosLeftIdx, futonPosRightIdx };
-        foreach (int idx in posIdxTable)
+        bool isPillow = false;
+        foreach (float pillowPosZ in pillowPosZTable)
         {
-            if (Random.Range(0, 100) < 40)
+            if (pillowPosZ <= posZ && posZ < (pillowPosZ + 15.0f))
             {
-                Vector3 generatePos = new Vector3(futonHomePos[idx], 0.0f, posZ + enemyPosZTable[telephonePolePosIdx[Random.Range(0, 1)]]);
-                GameObject cloneBlock = Instantiate(telephonePolePrefab, generatePos, Quaternion.identity) as GameObject;
-                cloneBlock.transform.SetParent(stageObject.transform);
+                isPillow = true;
             }
         }
+        int[] reservedPillow = { Random.Range(0, futonHomePos.Length), Random.Range(0, enemyPosZTable.Length) };
 
-
-        foreach (float zpos in enemyPosZTable)
+        for (int zposIdx = 0; zposIdx < enemyPosZTable.Length; ++zposIdx)
         {
-            foreach (float xpos in futonHomePos)
+            float zpos = enemyPosZTable[zposIdx];
+            for (int xposIdx = 0; xposIdx < futonHomePos.Length; ++xposIdx)
             {
-                if (Random.Range(0, 100) < 10)
+                float xpos = futonHomePos[xposIdx];
+
+                if (isPillow && reservedPillow[0] == xposIdx && reservedPillow[1] == zposIdx)
+                {
+                    Vector3 generatePos = new Vector3(xpos, 0.0f, posZ + zpos);
+                    GameObject cloneBlock = Instantiate(pillowPrefab, generatePos, Quaternion.identity) as GameObject;
+                    cloneBlock.transform.SetParent(stageObject.transform);
+                }
+                else if ((zposIdx % 2 == 1) && (xposIdx == futonPosLeftIdx || xposIdx == futonPosRightIdx) && Random.Range(0, 100) < 20)
+                {
+                    Vector3 generatePos = new Vector3(xpos, 0.0f, posZ + zpos);
+                    GameObject cloneBlock = Instantiate(telephonePolePrefab, generatePos, Quaternion.identity) as GameObject;
+                    cloneBlock.transform.SetParent(stageObject.transform);
+                }
+                else if ((zposIdx % 2 == 0) && Random.Range(0, 100) < 20)
                 {
                     Vector3 generatePos = new Vector3(xpos, 0.0f, posZ + zpos);
                     GameObject cloneBlock = Instantiate(hurdlePrefab, generatePos, Quaternion.identity) as GameObject;
@@ -220,7 +261,23 @@ public class GameMain : MonoBehaviour
         }
     }
 
+
     public void gameOver()
+    {
+        if (playerStatus == PlayerStatus.RUN)
+        {
+            Invoke("changeGameOverScene", 3); // 3秒後にchangeGameOverSceneを呼び出し
+            playerStatus = PlayerStatus.GAME_OVER; // 以降、ゲームオーバー開始処理を実行しない。
+
+            GameObject effectDeadPrefab = (GameObject)Resources.Load("Prefabs/EffectDead");
+            GameObject cloneBlock = Instantiate(effectDeadPrefab, futonPos, Quaternion.identity) as GameObject;
+            cloneBlock.transform.SetParent(stageObject.transform);
+
+            futonDirection.y = 20.0f;
+        }
+    }
+
+    private void changeGameOverScene()
     {
         SceneManager.LoadScene("GameOver");
     }
@@ -228,5 +285,25 @@ public class GameMain : MonoBehaviour
     public void gameClear()
     {
         SceneManager.LoadScene("GameClear");
+    }
+
+    public void getPillow()
+    {
+        scoreManager.incrementPillow();
+
+        GameObject effectDeadPrefab = (GameObject)Resources.Load("Prefabs/EffectPillow");
+        GameObject cloneBlock = Instantiate(effectDeadPrefab, futonPos, Quaternion.identity) as GameObject;
+        cloneBlock.transform.SetParent(futon.transform);
+
+        if (scoreManager.getPillowNum() == 1)
+        {
+            GameObject pillow1 = GameObject.Find("PillowScore1");
+            pillow1.GetComponent<Renderer>().enabled = true;
+        }
+        else
+        {
+            GameObject pillow2 = GameObject.Find("PillowScore2");
+            pillow2.GetComponent<Renderer>().enabled = true;
+        }
     }
 }
