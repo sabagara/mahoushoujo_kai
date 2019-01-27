@@ -45,6 +45,10 @@ public class GameMain : MonoBehaviour
     private float[] enemyPosZTable = { 6.0f, 3.0f, 0.0f, -3.0f, -6.0f };
     private int[] telephonePolePosIdx = { 1, 4 };
 
+
+    private GameObject pillowPrefab;
+    private float[] pillowPosZTable = { 400.0f, 700.0f, 1100.0f };
+
     enum PlayerStatus {
         RUN,
         GAME_OVER,
@@ -87,6 +91,9 @@ public class GameMain : MonoBehaviour
         telephonePolePrefab = (GameObject)Resources.Load("Prefabs/TelephonePole");
         hurdlePrefab = (GameObject)Resources.Load("Prefabs/Hurdle");
         carPrefab = (GameObject)Resources.Load("Prefabs/Car");
+
+
+        pillowPrefab = (GameObject)Resources.Load("Prefabs/Pillow");
 
         playerStatus = PlayerStatus.RUN;
     }
@@ -164,7 +171,7 @@ public class GameMain : MonoBehaviour
             else
             {
                 addBlock(blockDefaultPrefab, lastStagePos);
-                addEnemyDefault(lastStagePos);
+                addObject(lastStagePos);
             }
         }
     }
@@ -192,25 +199,38 @@ public class GameMain : MonoBehaviour
         cloneBlock.transform.SetParent(stageObject.transform);
     }
 
-    private void addEnemyDefault(float posZ)
+    private void addObject(float posZ)
     {
-        int[] posIdxTable = { futonPosLeftIdx, futonPosRightIdx };
-        foreach (int idx in posIdxTable)
+        bool isPillow = false;
+        foreach (float pillowPosZ in pillowPosZTable)
         {
-            if (Random.Range(0, 100) < 40)
+            if (pillowPosZ <= posZ && posZ < (pillowPosZ + 15.0f))
             {
-                Vector3 generatePos = new Vector3(futonHomePos[idx], 0.0f, posZ + enemyPosZTable[telephonePolePosIdx[Random.Range(0, 1)]]);
-                GameObject cloneBlock = Instantiate(telephonePolePrefab, generatePos, Quaternion.identity) as GameObject;
-                cloneBlock.transform.SetParent(stageObject.transform);
+                isPillow = true;
             }
         }
+        int[] reservedPillow = { Random.Range(0, futonHomePos.Length), Random.Range(0, enemyPosZTable.Length) };
 
-
-        foreach (float zpos in enemyPosZTable)
+        for (int zposIdx = 0; zposIdx < enemyPosZTable.Length; ++zposIdx)
         {
-            foreach (float xpos in futonHomePos)
+            float zpos = enemyPosZTable[zposIdx];
+            for (int xposIdx = 0; xposIdx < futonHomePos.Length; ++xposIdx)
             {
-                if (Random.Range(0, 100) < 10)
+                float xpos = futonHomePos[xposIdx];
+
+                if (isPillow && reservedPillow[0] == xposIdx && reservedPillow[1] == zposIdx)
+                {
+                    Vector3 generatePos = new Vector3(xpos, 0.0f, posZ + zpos);
+                    GameObject cloneBlock = Instantiate(pillowPrefab, generatePos, Quaternion.identity) as GameObject;
+                    cloneBlock.transform.SetParent(stageObject.transform);
+                }
+                else if ((zposIdx % 2 == 1) && (xposIdx == futonPosLeftIdx || xposIdx == futonPosRightIdx) && Random.Range(0, 100) < 20)
+                {
+                    Vector3 generatePos = new Vector3(xpos, 0.0f, posZ + zpos);
+                    GameObject cloneBlock = Instantiate(telephonePolePrefab, generatePos, Quaternion.identity) as GameObject;
+                    cloneBlock.transform.SetParent(stageObject.transform);
+                }
+                else if ((zposIdx % 2 == 0) && Random.Range(0, 100) < 20)
                 {
                     Vector3 generatePos = new Vector3(xpos, 0.0f, posZ + zpos);
                     GameObject cloneBlock = Instantiate(hurdlePrefab, generatePos, Quaternion.identity) as GameObject;

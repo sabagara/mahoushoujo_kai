@@ -18,4 +18,12 @@ public class Enemy : MonoBehaviour
             gameMain.gameOver();
         }
     }
+
+    void Update()
+    {
+        if (this.transform.position.z - gameMain.getFutonPos().z < -10.0f)
+        {
+            Destroy(gameObject);
+        }
+    }
 }

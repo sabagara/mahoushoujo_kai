@@ -19,4 +19,12 @@ public class Pillow : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    void Update()
+    {
+        if (this.transform.position.z - gameMain.getFutonPos().z < -10.0f)
+        {
+            Destroy(gameObject);
+        }
+    }
 }
